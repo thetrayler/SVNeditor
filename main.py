@@ -14,7 +14,7 @@ class FileEditorApp:
 
     def __init__(self, root):
         self.root = root
-        self.root.title("Редактор файлов — Hypper Sandbox")
+        self.root.title("Редактор SVN файлов — Hypper Sandbox")
         self.root.geometry("1000x650")
         self.root.minsize(800, 550)
 
