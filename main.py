@@ -83,20 +83,20 @@ class FileEditorApp:
         self.info_label.pack(anchor=tk.W)
 
         # Панель сварки
-        wire_frame = ttk.LabelFrame(right_frame, text="Сварка пропов (wire)", padding=10)
-        wire_frame.pack(fill=tk.X, padx=10, pady=(0, 10))
+        weld_frame = ttk.LabelFrame(right_frame, text="Сварка пропов (weld)", padding=10)
+        weld_frame.pack(fill=tk.X, padx=10, pady=(0, 10))
 
-        row = ttk.Frame(wire_frame)
+        row = ttk.Frame(weld_frame)
         row.pack(fill=tk.X, pady=(0, 5))
 
         ttk.Label(row, text="От SaveId:").pack(side=tk.LEFT)
-        self.wire_from_var = tk.StringVar()
-        ttk.Entry(row, textvariable=self.wire_from_var, width=8)\
+        self.weld_from_var = tk.StringVar()
+        ttk.Entry(row, textvariable=self.weld_from_var, width=8)\
             .pack(side=tk.LEFT, padx=(5, 15))
 
         ttk.Label(row, text="До SaveId:").pack(side=tk.LEFT)
-        self.wire_to_var = tk.StringVar()
-        ttk.Entry(row, textvariable=self.wire_to_var, width=8)\
+        self.weld_to_var = tk.StringVar()
+        ttk.Entry(row, textvariable=self.weld_to_var, width=8)\
             .pack(side=tk.LEFT, padx=(5, 15))
 
         self.bidirectional_var = tk.BooleanVar(value=False)
@@ -107,11 +107,11 @@ class FileEditorApp:
         ttk.Checkbutton(row, text="Замкнуть в кольцо", variable=self.loop_var)\
             .pack(side=tk.LEFT)
 
-        row2 = ttk.Frame(wire_frame)
+        row2 = ttk.Frame(weld_frame)
         row2.pack(fill=tk.X)
-        ttk.Button(row2, text="Сварить по цепочке", command=self.wire_chain)\
+        ttk.Button(row2, text="Сварить по цепочке", command=self.weld_chain)\
             .pack(side=tk.LEFT)
-        ttk.Button(row2, text="Очистить wire в диапазоне", command=self.clear_wire_range)\
+        ttk.Button(row2, text="Очистить weld в диапазоне", command=self.clear_weld_range)\
             .pack(side=tk.LEFT, padx=(5, 0))
         ttk.Button(row2, text="💾 Сохранить изменения (в Saves)", command=self.save_to_saves)\
             .pack(side=tk.RIGHT)
@@ -163,14 +163,14 @@ class FileEditorApp:
 
     # ---------- Сварка ----------
 
-    def wire_chain(self):
+    def weld_chain(self):
         """Последовательно сварочный диапазон [from, to]."""
         if not self._sync_json_from_text():
             return
 
         try:
-            start = int(self.wire_from_var.get())
-            end = int(self.wire_to_var.get())
+            start = int(self.weld_from_var.get())
+            end = int(self.weld_to_var.get())
         except ValueError:
             messagebox.showerror("Ошибка", "SaveId должны быть целыми числами.")
             return
@@ -179,7 +179,7 @@ class FileEditorApp:
             start, end = end, start
 
         missing = []
-        wired_count = 0
+        weldd_count = 0
         for sid in range(start, end + 1):
             prop = self._prop_by_saveid(sid)
             if prop is None:
@@ -194,36 +194,36 @@ class FileEditorApp:
                 continue
 
             # для двусторонней сварки добавляем и себя в цель
-            self._add_wire(prop, target)
+            self._add_weld(prop, target)
             if self.bidirectional_var.get():
                 target_prop = self._prop_by_saveid(target)
                 if target_prop is not None:
-                    self._add_wire(target_prop, sid)
-            wired_count += 1
+                    self._add_weld(target_prop, sid)
+            weldd_count += 1
 
         self._sync_text_from_json()
-        msg = f"Сварено пар: {wired_count}"
+        msg = f"Сварено пар: {weldd_count}"
         if missing:
             msg += f"\nПропущены SaveId (не найдены): {missing}"
         self.status_var.set(msg.split("\n")[0])
         messagebox.showinfo("Готово", msg)
 
-    def _add_wire(self, prop, target_save_id):
-        lst = prop.get("wireTargetSaveIds")
+    def _add_weld(self, prop, target_save_id):
+        lst = prop.get("weldTargetSaveIds")
         if not isinstance(lst, list):
             lst = []
         if target_save_id not in lst:
             lst.append(target_save_id)
         # сортируем и убираем дубли — так удобнее читать
-        prop["wireTargetSaveIds"] = sorted(set(lst))
+        prop["weldTargetSaveIds"] = sorted(set(lst))
 
-    def clear_wire_range(self):
-        """Очищает wireTargetSaveIds у пропов в диапазоне."""
+    def clear_weld_range(self):
+        """Очищает weldTargetSaveIds у пропов в диапазоне."""
         if not self._sync_json_from_text():
             return
         try:
-            start = int(self.wire_from_var.get())
-            end = int(self.wire_to_var.get())
+            start = int(self.weld_from_var.get())
+            end = int(self.weld_to_var.get())
         except ValueError:
             messagebox.showerror("Ошибка", "SaveId должны быть целыми числами.")
             return
@@ -234,7 +234,7 @@ class FileEditorApp:
         for sid in range(start, end + 1):
             prop = self._prop_by_saveid(sid)
             if prop is not None:
-                prop["wireTargetSaveIds"] = []
+                prop["weldTargetSaveIds"] = []
                 count += 1
         self._sync_text_from_json()
         messagebox.showinfo("Готово", f"Очищено пропов: {count}")
