@@ -81,6 +81,8 @@ class FileEditorApp:
                                     text="Путь: —\nРазмер: —\nКодировка: —\nПропов: —",
                                     justify=tk.LEFT)
         self.info_label.pack(anchor=tk.W)
+        ttk.Button(info_frame, text="💾 Сохранить изменения (в Saves)", command=self.save_to_saves)\
+                    .pack(side=tk.RIGHT)
 
         # Панель сварки
         weld_frame = ttk.LabelFrame(right_frame, text="Сварка пропов (weld)", padding=10)
@@ -89,12 +91,12 @@ class FileEditorApp:
         row = ttk.Frame(weld_frame)
         row.pack(fill=tk.X, pady=(0, 5))
 
-        ttk.Label(row, text="От SaveId:").pack(side=tk.LEFT)
+        ttk.Label(row, text="От Id пропа:").pack(side=tk.LEFT)
         self.weld_from_var = tk.StringVar()
         ttk.Entry(row, textvariable=self.weld_from_var, width=8)\
             .pack(side=tk.LEFT, padx=(5, 15))
 
-        ttk.Label(row, text="До SaveId:").pack(side=tk.LEFT)
+        ttk.Label(row, text="До Id пропа:").pack(side=tk.LEFT)
         self.weld_to_var = tk.StringVar()
         ttk.Entry(row, textvariable=self.weld_to_var, width=8)\
             .pack(side=tk.LEFT, padx=(5, 15))
@@ -113,8 +115,6 @@ class FileEditorApp:
             .pack(side=tk.LEFT)
         ttk.Button(row2, text="Очистить сварку в диапазоне", command=self.clear_weld_range)\
             .pack(side=tk.LEFT, padx=(5, 0))
-        ttk.Button(row2, text="💾 Сохранить изменения (в Saves)", command=self.save_to_saves)\
-            .pack(side=tk.RIGHT)
 
         # Область редактирования
         edit_frame = ttk.LabelFrame(right_frame, text="Содержимое файла", padding=10)
