@@ -82,7 +82,7 @@ class FileEditorApp:
                                     justify=tk.LEFT)
         self.info_label.pack(anchor=tk.W)
         ttk.Button(info_frame, text="💾 Сохранить изменения (в Saves)", command=self.save_to_saves)\
-                    .pack(side=tk.RIGHT)
+            .pack(side=tk.RIGHT)
 
         # Панель сварки
         weld_frame = ttk.LabelFrame(right_frame, text="Сварка пропов (weld)", padding=10)
