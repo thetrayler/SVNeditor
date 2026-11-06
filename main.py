@@ -111,7 +111,7 @@ class FileEditorApp:
         row2.pack(fill=tk.X)
         ttk.Button(row2, text="Сварить по цепочке", command=self.weld_chain)\
             .pack(side=tk.LEFT)
-        ttk.Button(row2, text="Очистить weld в диапазоне", command=self.clear_weld_range)\
+        ttk.Button(row2, text="Очистить сварку в диапазоне", command=self.clear_weld_range)\
             .pack(side=tk.LEFT, padx=(5, 0))
         ttk.Button(row2, text="💾 Сохранить изменения (в Saves)", command=self.save_to_saves)\
             .pack(side=tk.RIGHT)
@@ -172,7 +172,7 @@ class FileEditorApp:
             start = int(self.weld_from_var.get())
             end = int(self.weld_to_var.get())
         except ValueError:
-            messagebox.showerror("Ошибка", "SaveId должны быть целыми числами.")
+            messagebox.showerror("Ошибка", "Id пропов должны быть целыми числами.")
             return
 
         if start > end:
@@ -204,7 +204,7 @@ class FileEditorApp:
         self._sync_text_from_json()
         msg = f"Сварено пар: {weldd_count}"
         if missing:
-            msg += f"\nПропущены SaveId (не найдены): {missing}"
+            msg += f"\nПропущены id пропов (не найдены): {missing}"
         self.status_var.set(msg.split("\n")[0])
         messagebox.showinfo("Готово", msg)
 
@@ -225,7 +225,7 @@ class FileEditorApp:
             start = int(self.weld_from_var.get())
             end = int(self.weld_to_var.get())
         except ValueError:
-            messagebox.showerror("Ошибка", "SaveId должны быть целыми числами.")
+            messagebox.showerror("Ошибка", "Id пропов должны быть целыми числами.")
             return
         if start > end:
             start, end = end, start
